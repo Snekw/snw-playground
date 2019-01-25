@@ -1,18 +1,14 @@
 image: node:11
 
 stages:
-  - dependencies
-  - test
   - build
   - deploy
 
-dependencies:
-  stage: dependencies
-  script: npm install
-
 build:
   stage: build
-  script: npm run build
+  script:
+   - npm install
+   - npm run build
   artifacts:
     name: $CI_COMMIT_REF_SLUG
     paths:
@@ -20,13 +16,10 @@ build:
   only:
     - master
 
-test:
-  stage: test
-  script: echo
-  allow_failure: true
-
 deploy_RAM:
   stage: deploy
+  dependencies:
+    - build
   before_script:
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
     - eval $(ssh-agent -s)
