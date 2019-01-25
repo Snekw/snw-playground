@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "outDir": "out",
+        "module": "es6",
+        "target": "es6",
+        "noImplicitAny": true,
+        "baseUrl": "src",
+        "sourceMap": true
+    },
+    "include": [
+        "src/**/*"
+    ],
+    "exclude": [
+        "node_modules",
+        "out"
+    ]
+}
