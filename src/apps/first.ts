@@ -1,1 +1,3 @@
-console.log('firsstss')
+import { log } from 'lib/logger'
+
+log('firsstss')

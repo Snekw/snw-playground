@@ -1,3 +1,4 @@
+import { log } from 'lib/logger'
 import { pow } from 'lib/math'
 
-console.log(pow(3,3))
+log(pow(3, 3))
