@@ -16,12 +16,12 @@ const files = fs.readdirSync(appsDir)
             name
         }
     })
-console.log(files)
+
 const entries = files.reduce((obj, curr) => {
     obj[curr.name] = curr.file
     return obj
 }, {})
-console.log(entries)
+
 const plugins = [
         new CleanWebpackPlugin(outDirName)
     ]
@@ -32,16 +32,21 @@ const plugins = [
     })))
     .concat([new webpack.HashedModuleIdsPlugin()])
 
-    console.log(plugins)
 module.exports = {
     mode: 'development',
     entry: entries,
     module: {
         rules: [{
-            test: /\.tsx?$/,
-            use: 'ts-loader',
-            exclude: /node_modules/
-        }]
+                test: /\.tsx?$/,
+                use: 'ts-loader',
+                exclude: /node_modules/
+            },
+            {
+                test: /\.(frag|vert)$/,
+                use: 'raw-loader',
+                exclude: /node_modules/
+            }
+        ]
     },
     devtool: 'inline-source-map',
     devServer: {
