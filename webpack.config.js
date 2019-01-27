@@ -13,6 +13,7 @@ const files = fs.readdirSync(appsDir)
         const name = path.parse(filePath).name
         return {
             file: filePath,
+            outPath: `html/${name}.html`,
             name
         }
     })
@@ -22,15 +23,36 @@ const entries = files.reduce((obj, curr) => {
     return obj
 }, {})
 
+entries['index'] = 'index.ts'
+
 const plugins = [
         new CleanWebpackPlugin(outDirName)
     ]
-    .concat(files.map(file => new HtmlWebpackPlugin({
-        title: file.name,
-        chunks: [file.name, 'vendor', 'runtime'],
-        filename: 'html/' + file.name + '.html'
-    })))
-    .concat([new webpack.HashedModuleIdsPlugin()])
+    .concat(
+        files.map(file => new HtmlWebpackPlugin({
+            title: file.title || file.name,
+            chunks: [file.name, 'vendor', 'runtime'],
+            filename: file.outPath
+        }))
+    )
+    .concat([
+        new HtmlWebpackPlugin({
+            title: 'Snekw\'s WebGL Playground',
+            template: '!!handlebars-loader!src/index.hbs',
+            chunks: ['index'],
+            apps: files.map(v => ({
+                name: v.name,
+                outPath: v.outPath
+            }))
+        }),
+        new webpack.HashedModuleIdsPlugin()
+        // new webpack.DefinePlugin({
+        //     APPS: JSON.stringify(files.map(v => ({
+        //         name: v.name,
+        //         outPath: v.outPath
+        //     })))
+        // })
+    ])
 
 module.exports = {
     mode: 'development',

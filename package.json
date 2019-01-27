@@ -12,6 +12,8 @@
   "devDependencies": {
     "@types/webgl2": "0.0.4",
     "clean-webpack-plugin": "^1.0.1",
+    "handlebars": "^4.0.12",
+    "handlebars-loader": "^1.7.1",
     "html-webpack-plugin": "^4.0.0-beta.5",
     "raw-loader": "^1.0.0",
     "ts-loader": "^5.3.3",
