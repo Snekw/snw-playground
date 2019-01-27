@@ -37,7 +37,7 @@ const plugins = [
     )
     .concat([
         new HtmlWebpackPlugin({
-            title: 'Snekw\'s WebGL Playground',
+            title: 'Snekw\'s Playground',
             template: '!!handlebars-loader!src/index.hbs',
             chunks: ['index'],
             apps: files.map(v => ({

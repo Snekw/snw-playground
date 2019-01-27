@@ -1,7 +1,7 @@
 {
-  "name": "webgl",
+  "name": "snw-playground",
   "version": "1.0.0",
-  "description": "Snekw's webgl tests",
+  "description": "Snekw's Playground",
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server",
