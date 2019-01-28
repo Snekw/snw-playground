@@ -28,7 +28,8 @@ const files = fs
             title: meta.title,
             file: indexPath,
             outPath: `html/${name}.html`,
-            name
+            name,
+            order: meta.order || Number.MAX_SAFE_INTEGER
         }
     })
 
@@ -54,7 +55,7 @@ const plugins = [
             title,
             template: '!!handlebars-loader!src/index.hbs',
             chunks: ['index'],
-            apps: files,
+            apps: files.sort((a, b) => a.order - b.order),
             app: {
                 title
             }
