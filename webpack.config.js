@@ -1,6 +1,7 @@
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const fs = require('fs')
 const path = require('path')
 
@@ -8,11 +9,24 @@ const appsDir = path.resolve(__dirname, 'src', 'apps')
 const outDirName = 'out'
 const outDirPath = path.resolve(__dirname, outDirName)
 
-const files = fs.readdirSync(appsDir)
+const title = 'Snekw\'s Playground'
+
+const files = fs
+    .readdirSync(appsDir)
     .map(filePath => {
+        let meta
+        let indexPath
+        try {
+            meta = JSON.parse(fs.readFileSync(path.join(appsDir, filePath, 'meta.json')))
+            indexPath = path.join(filePath, meta.index || '')
+        } catch (err) {
+            console.error(err)
+            throw "meta.json file missing or malformed"
+        }
         const name = path.parse(filePath).name
         return {
-            file: filePath,
+            title: meta.title,
+            file: indexPath,
             outPath: `html/${name}.html`,
             name
         }
@@ -37,15 +51,19 @@ const plugins = [
     )
     .concat([
         new HtmlWebpackPlugin({
-            title: 'Snekw\'s Playground',
+            title,
             template: '!!handlebars-loader!src/index.hbs',
             chunks: ['index'],
-            apps: files.map(v => ({
-                name: v.name,
-                outPath: v.outPath
-            }))
+            apps: files,
+            app: {
+                title
+            }
         }),
-        new webpack.HashedModuleIdsPlugin()
+        new webpack.HashedModuleIdsPlugin(),
+        new MiniCssExtractPlugin({
+            filename: 'css/[name].[contenthash].css',
+            chunkFilename: 'css/[name].[contenthash].css'
+        })
         // new webpack.DefinePlugin({
         //     APPS: JSON.stringify(files.map(v => ({
         //         name: v.name,
@@ -54,7 +72,7 @@ const plugins = [
         // })
     ])
 
-module.exports = {
+module.exports = (env, argv) => ({
     mode: 'development',
     entry: entries,
     module: {
@@ -67,6 +85,14 @@ module.exports = {
                 test: /\.(frag|vert)$/,
                 use: 'raw-loader',
                 exclude: /node_modules/
+            },
+            {
+                test: /.scss$/,
+                use: [
+                    argv.mode !== 'production' ? 'style-loader' : MiniCssExtractPlugin.loader,
+                    'css-loader',
+                    'sass-loader'
+                ]
             }
         ]
     },
@@ -102,4 +128,4 @@ module.exports = {
         }
     },
     plugins
-}
+})

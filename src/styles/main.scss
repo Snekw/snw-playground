@@ -1,0 +1,64 @@
+@import '_vars';
+@import '_colors';
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    width: 100vw;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    display: flex
+}
+
+#frontPageTitle {
+    display: flex;
+    justify-content: center;
+}
+
+#frontPage {
+    width: 100%;
+    justify-content: center;
+    height: 100%;
+}
+
+#appsList {
+    width: $appsListWidth;
+    height: 100%;
+    background-color: aquamarine;
+
+    ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+
+        li {
+            box-sizing: border-box;
+            width: 100%;
+
+            a {
+                box-sizing: border-box;
+                display: block;
+                padding: 5px;
+                margin: 5px;
+                width: 100%;
+                height: 100%;
+                text-decoration: none;
+            }
+        }
+    }
+}
+
+#appReadme {
+    background-color: bisque;
+    max-width: $body-width - $appsListWidth;
+    width: 100%;
+}

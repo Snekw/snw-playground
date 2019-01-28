@@ -8,9 +8,29 @@
 </head>
 
 <body>
-    {{#each htmlWebpackPlugin.options.apps as |app|}}
-    <a href="{{app.outPath}}">{{app.name}}</a><br/>
-    {{/each}}
+    <noscript>
+        <div class="warning">
+            This page relies on JavaScript to show case the "apps" I have made.
+        </div>
+    </noscript>
+    <div id="frontPageTitle">
+        <h1>{{htmlWebpackPlugin.options.app.title}}</h1>
+    </div>
+    <div id="frontPage" class="container">
+        <div id="appsList" class="container">
+            <ul>
+                {{#each htmlWebpackPlugin.options.apps as |app|}}
+                <li>
+                    <a href="{{app.outPath}}">{{app.title}}</a>
+                </li>
+                {{/each}}
+            </ul>
+        </div>
+        <div id="appReadme" class="container">
+
+        </div>
+    </div>
+
 </body>
 
 </html>

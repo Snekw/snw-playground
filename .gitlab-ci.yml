@@ -33,6 +33,6 @@ deploy_RAM:
     - rsync -e 'ssh -p 4040' -a ./out/ ramdeploy@snekw.com:/var/www/html/webgl
   environment:
     name: production
-    url: https://fun.snekw.com/webgl
+    url: https://fun.snekw.com
   only:
     - master
