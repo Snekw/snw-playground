@@ -62,8 +62,7 @@ const plugins = [
         }),
         new webpack.HashedModuleIdsPlugin(),
         new MiniCssExtractPlugin({
-            filename: 'css/[name].[contenthash].css',
-            chunkFilename: 'css/[name].[contenthash].css'
+            filename: 'css/[name].[contenthash].css'
         })
         // new webpack.DefinePlugin({
         //     APPS: JSON.stringify(files.map(v => ({
@@ -100,12 +99,10 @@ module.exports = (env, argv) => ({
     devtool: 'inline-source-map',
     devServer: {
         contentBase: outDirPath,
-        compress: true,
-        writeToDisk: true
+        compress: true
     },
     output: {
         filename: 'js/[name].[contenthash].js',
-        chunkFilename: 'js/[name].[contenthash].js',
         path: outDirPath
     },
     resolve: {
