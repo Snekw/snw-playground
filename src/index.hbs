@@ -13,11 +13,11 @@
             This page relies on JavaScript to show case the "apps" I have made.
         </div>
     </noscript>
-    <div id="frontPageTitle">
+    <header id="frontPageTitle">
         <h1>{{htmlWebpackPlugin.options.app.title}}</h1>
-    </div>
+    </header>
     <div id="frontPage" class="container">
-        <div id="appsList" class="container">
+        <nav id="appsList" class="container">
             <ul>
                 {{#each htmlWebpackPlugin.options.apps as |app|}}
                 <li>
@@ -25,10 +25,14 @@
                 </li>
                 {{/each}}
             </ul>
-        </div>
-        <div id="appReadme" class="container">
-
-        </div>
+        </nav>
+        <section id="appContainer" class="container">
+            <iframe id="appFrame" src="{{htmlWebpackPlugin.options.apps.0.outPath}}"></iframe>
+            <section id="appReadmeContainer">
+                <h1></h1>
+                <article></article>
+            </section>
+        </section>
     </div>
 
 </body>

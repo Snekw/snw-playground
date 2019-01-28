@@ -1,6 +1,6 @@
 {
     "title": "Maze Solver",
-    "readme": "",
+    "readme": "mazeSolver.md",
     "index": "index.ts",
     "order": 1
 }
