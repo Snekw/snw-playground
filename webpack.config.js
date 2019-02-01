@@ -6,12 +6,13 @@ const fs = require('fs')
 const path = require('path')
 
 const appsDir = path.resolve(__dirname, 'src', 'apps')
+const workersDir = path.resolve(__dirname, 'src', 'workers')
 const outDirName = 'out'
 const outDirPath = path.resolve(__dirname, outDirName)
 
 const title = 'Snekw\'s Playground'
 
-const files = fs
+const apps = fs
     .readdirSync(appsDir)
     .map(filePath => {
         let meta
@@ -33,10 +34,19 @@ const files = fs
         }
     })
 
-const entries = files.reduce((obj, curr) => {
-    obj[curr.name] = curr.file
-    return obj
-}, {})
+const workers = fs
+    .readdirSync(workersDir)
+    .map(filePath => ({
+        file: path.join(workersDir, filePath),
+        name: `${path.parse(filePath).name}-worker`
+    }))
+
+const entries = apps
+    .concat(workers)
+    .reduce((obj, curr) => {
+        obj[curr.name] = curr.file
+        return obj
+    }, {})
 
 entries['index'] = 'index.ts'
 
@@ -44,7 +54,7 @@ const plugins = [
         new CleanWebpackPlugin(outDirName)
     ]
     .concat(
-        files.map(file => new HtmlWebpackPlugin({
+        apps.map(file => new HtmlWebpackPlugin({
             title: file.title || file.name,
             chunks: [file.name, 'vendor', 'runtime'],
             filename: file.outPath
@@ -55,75 +65,74 @@ const plugins = [
             title,
             template: '!!handlebars-loader!src/index.hbs',
             chunks: ['index'],
-            apps: files.sort((a, b) => a.order - b.order),
+            apps: apps.sort((a, b) => a.order - b.order),
             app: {
                 title
             }
         }),
-        new webpack.HashedModuleIdsPlugin(),
         new MiniCssExtractPlugin({
             filename: 'css/[name].[contenthash].css'
         })
-        // new webpack.DefinePlugin({
-        //     APPS: JSON.stringify(files.map(v => ({
-        //         name: v.name,
-        //         outPath: v.outPath
-        //     })))
-        // })
     ])
 
-module.exports = (env, argv) => ({
-    mode: 'development',
-    entry: entries,
-    module: {
-        rules: [{
-                test: /\.tsx?$/,
-                use: 'ts-loader',
-                exclude: /node_modules/
-            },
-            {
-                test: /\.(frag|vert)$/,
-                use: 'raw-loader',
-                exclude: /node_modules/
-            },
-            {
-                test: /.scss$/,
-                use: [
-                    argv.mode !== 'production' ? 'style-loader' : MiniCssExtractPlugin.loader,
-                    'css-loader',
-                    'sass-loader'
-                ]
-            }
-        ]
-    },
-    devtool: 'inline-source-map',
-    devServer: {
-        contentBase: outDirPath,
-        compress: true
-    },
-    output: {
-        filename: 'js/[name].[contenthash].js',
-        path: outDirPath
-    },
-    resolve: {
-        extensions: ['.ts', '.tsx', '.js'],
-        modules: [
-            path.resolve(__dirname, 'src'),
-            path.resolve(__dirname, 'src', 'apps'),
-            'node_modules'
-        ]
-    },
-    optimization: {
-        runtimeChunk: 'single',
-        splitChunks: {
-            cacheGroups: {
-                vendor: {
-                    test: /node_modules/,
-                    name: 'vendor',
-                    chunks: 'all'
+module.exports = (env, argv) => {
+    const prod = argv.mode === 'production'
+
+    return {
+        target: 'web',
+        mode: 'development',
+        entry: entries,
+        module: {
+            rules: [{
+                    test: /\.tsx?$/,
+                    use: 'ts-loader',
+                    exclude: /node_modules/
+                },
+                {
+                    test: /\.(frag|vert)$/,
+                    use: 'raw-loader',
+                    exclude: /node_modules/
+                },
+                {
+                    test: /.scss$/,
+                    use: [
+                        prod ? 'style-loader' : MiniCssExtractPlugin.loader,
+                        'css-loader',
+                        'sass-loader'
+                    ]
+                }
+            ]
+        },
+        devtool: 'inline-source-map',
+        devServer: {
+            contentBase: outDirPath,
+            compress: true
+        },
+        output: {
+            filename: prod ? 'js/[contenthash].js' : 'js/[name].js',
+            path: outDirPath
+        },
+        resolve: {
+            extensions: ['.ts', '.tsx', '.js'],
+            modules: [
+                path.resolve(__dirname, 'src'),
+                path.resolve(__dirname, 'src', 'apps'),
+                'node_modules'
+            ]
+        },
+        optimization: {
+            moduleIds: prod ? 'hashed' : 'named',
+            runtimeChunk: 'single',
+            splitChunks: {
+                cacheGroups: {
+                    vendor: {
+                        test: /node_modules/,
+                        name: 'vendor',
+                        chunks: 'all'
+                    }
                 }
             }
-        }
-    },
-    plugins
-})
+        },
+        plugins
+    }
+}
