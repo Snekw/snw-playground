@@ -1,7 +1,7 @@
 import { clamp, getRandomNumber } from 'lib/math'
 import { ICanvasWorkerPostMessage } from 'lib/sharedInterfaces'
 import 'styles/app.scss'
-import Worker from 'worker-loader?name=workers/[name].[contenthash].worker.js&publicPath=/!workers/canvasWorker'
+import Worker from 'worker-loader?name=workers/[name].[contenthash].worker.js&publicPath=../!workers/canvasWorker'
 
 /**
  * Common options for the app

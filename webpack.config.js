@@ -72,7 +72,7 @@ module.exports = (env, argv) => {
                 }
             ]
         },
-        devtool: 'inline-source-map',
+        devtool: prod ? false : 'inline-source-map',
         devServer: {
             contentBase: appOutDirPath,
             compress: true
