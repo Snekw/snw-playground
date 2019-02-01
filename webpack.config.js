@@ -6,11 +6,8 @@ const fs = require('fs')
 const path = require('path')
 
 const appsDir = path.resolve(__dirname, 'src', 'apps')
-const workersDir = path.resolve(__dirname, 'src', 'workers')
 const appOutDirName = 'out'
-const workersOutDirName = 'workers'
 const appOutDirPath = path.resolve(__dirname, appOutDirName)
-const workersOutDirPath = path.resolve(__dirname, appOutDirName, workersOutDirName)
 
 const title = 'Snekw\'s Playground'
 
@@ -36,13 +33,6 @@ const apps = fs
         }
     })
 
-const workers = fs
-    .readdirSync(workersDir)
-    .map(filePath => ({
-        file: path.join(workersOutDirName, filePath),
-        name: path.parse(filePath).name
-    }))
-
 const makeEntries = (fileObjs) => fileObjs
     .reduce((obj, curr) => {
         obj[curr.name] = curr.file
@@ -52,7 +42,6 @@ const makeEntries = (fileObjs) => fileObjs
 const appEntries = makeEntries(apps)
 appEntries['index'] = 'index.ts'
 
-const workerEntries = makeEntries(workers)
 
 module.exports = (env, argv) => {
     const prod = argv.mode === 'production'
