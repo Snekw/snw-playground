@@ -17,14 +17,3 @@ declare module "worker-loader*" {
 
     export default WebpackWorker;
 }
-
-// interface WebGlApp {
-//     name: string,
-//     outPath: string
-// }
-// /**
-//  * JSON string of available apps.
-//  *
-//  * Webpack Defined
-//  */
-// declare const APPS: WebGlApp;

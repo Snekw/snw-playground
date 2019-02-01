@@ -57,127 +57,85 @@ const workerEntries = makeEntries(workers)
 module.exports = (env, argv) => {
     const prod = argv.mode === 'production'
 
-    return [{
-            name: 'apps',
-            target: 'web',
-            mode: 'development',
-            entry: appEntries,
-            module: {
-                rules: [{
-                        test: /\.tsx?$/,
-                        use: 'ts-loader',
-                        exclude: /node_modules/
-                    },
-                    {
-                        test: /\.(frag|vert)$/,
-                        use: 'raw-loader',
-                        exclude: /node_modules/
-                    },
-                    {
-                        test: /\.scss$/,
-                        use: [
-                            prod ? 'style-loader' : MiniCssExtractPlugin.loader,
-                            'css-loader',
-                            'sass-loader'
-                        ]
-                    }
-                ]
-            },
-            devtool: 'inline-source-map',
-            devServer: {
-                contentBase: appOutDirPath,
-                compress: true
-            },
-            output: {
-                filename: prod ? 'js/[contenthash].js' : 'js/[name].js',
-                path: appOutDirPath
-            },
-            resolve: {
-                extensions: ['.ts', '.tsx', '.js'],
-                modules: [
-                    path.resolve(__dirname, 'src'),
-                    path.resolve(__dirname, 'src', 'apps'),
-                    'node_modules'
-                ]
-            },
-            optimization: {
-                moduleIds: prod ? 'hashed' : 'named',
-                runtimeChunk: 'single',
-                splitChunks: {
-                    cacheGroups: {
-                        vendor: {
-                            test: /node_modules/,
-                            name: 'vendor',
-                            chunks: 'all'
-                        }
+    return {
+        name: 'apps',
+        target: 'web',
+        mode: 'development',
+        entry: appEntries,
+        module: {
+            rules: [{
+                    test: /\.tsx?$/,
+                    use: 'ts-loader',
+                    exclude: /node_modules/
+                },
+                {
+                    test: /\.(frag|vert)$/,
+                    use: 'raw-loader',
+                    exclude: /node_modules/
+                },
+                {
+                    test: /\.scss$/,
+                    use: [
+                        prod ? 'style-loader' : MiniCssExtractPlugin.loader,
+                        'css-loader',
+                        'sass-loader'
+                    ]
+                }
+            ]
+        },
+        devtool: 'inline-source-map',
+        devServer: {
+            contentBase: appOutDirPath,
+            compress: true
+        },
+        output: {
+            filename: prod ? 'js/[contenthash].js' : 'js/[name].js',
+            path: appOutDirPath
+        },
+        resolve: {
+            extensions: ['.ts', '.tsx', '.js'],
+            modules: [
+                path.resolve(__dirname, 'src'),
+                path.resolve(__dirname, 'src', 'apps'),
+                'node_modules'
+            ]
+        },
+        optimization: {
+            moduleIds: prod ? 'hashed' : 'named',
+            runtimeChunk: 'single',
+            splitChunks: {
+                cacheGroups: {
+                    vendor: {
+                        test: /node_modules/,
+                        name: 'vendor',
+                        chunks: 'all'
                     }
                 }
-            },
-            plugins: [
-                    new CleanWebpackPlugin(appOutDirName)
-                ]
-                .concat(
-                    apps.map(file => new HtmlWebpackPlugin({
-                        title: file.title || file.name,
-                        chunks: [file.name, 'vendor', 'runtime'],
-                        filename: file.outPath
-                    }))
-                )
-                .concat([
-                    new HtmlWebpackPlugin({
-                        title,
-                        template: '!!handlebars-loader!src/index.hbs',
-                        chunks: ['index'],
-                        apps: apps.sort((a, b) => a.order - b.order),
-                        app: {
-                            title
-                        }
-                    }),
-                    new MiniCssExtractPlugin({
-                        filename: 'css/[name].[contenthash].css'
-                    })
-                ])
+            }
         },
-        // workers
-        // {
-        //     name: 'workers',
-        //     target: 'webworker',
-        //     mode: 'development',
-        //     entry: workerEntries,
-        //     module: {
-        //         rules: [{
-        //                 test: /\.tsx?$/,
-        //                 use: 'ts-loader',
-        //                 exclude: /node_modules/
-        //             },
-        //             {
-        //                 test: /\.(frag|vert)$/,
-        //                 use: 'raw-loader',
-        //                 exclude: /node_modules/
-        //             }
-        //         ]
-        //     },
-        //     devtool: 'inline-source-map',
-        //     devServer: {
-        //         contentBase: workersOutDirPath,
-        //         compress: true
-        //     },
-        //     output: {
-        //         filename: prod ? '[contenthash].worker.js' : '[name].worker.js',
-        //         path: workersOutDirPath
-        //     },
-        //     resolve: {
-        //         extensions: ['.ts', '.tsx', '.js'],
-        //         modules: [
-        //             path.resolve(__dirname, 'src'),
-        //             path.resolve(__dirname, 'src', 'workers'),
-        //             'node_modules'
-        //         ]
-        //     },
-        //     optimization: {
-        //         moduleIds: prod ? 'hashed' : 'named'
-        //     },
-        //     plugins: []
-        // }
-    ]
+        plugins: [
+                new CleanWebpackPlugin(appOutDirName)
+            ]
+            .concat(
+                apps.map(file => new HtmlWebpackPlugin({
+                    title: file.title || file.name,
+                    chunks: [file.name, 'vendor', 'runtime'],
+                    filename: file.outPath
+                }))
+            )
+            .concat([
+                new HtmlWebpackPlugin({
+                    title,
+                    template: '!!handlebars-loader!src/index.hbs',
+                    chunks: ['index'],
+                    apps: apps.sort((a, b) => a.order - b.order),
+                    app: {
+                        title
+                    }
+                }),
+                new MiniCssExtractPlugin({
+                    filename: 'css/[name].[contenthash].css'
+                })
+            ])
+    }
 }

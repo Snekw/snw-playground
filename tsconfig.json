@@ -5,7 +5,14 @@
         "target": "es6",
         "noImplicitAny": true,
         "baseUrl": "src",
-        "sourceMap": true
+        "sourceMap": true,
+        "lib": [
+            "dom",
+            "webworker",
+            "es5",
+            "es6",
+            "es7"
+        ]
     },
     "include": [
         "src/**/*"
