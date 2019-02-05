@@ -1,0 +1,6 @@
+{
+    "title": "WebGl Workers",
+    "readme": "webglWorkers.md",
+    "index": "index.ts",
+    "order": 3
+}

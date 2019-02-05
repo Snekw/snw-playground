@@ -27,7 +27,7 @@ const apps = fs
         return {
             title: meta.title,
             file: indexPath,
-            outPath: `html/${name}.html`,
+            outPath: `${name}/${name}.html`,
             name,
             order: meta.order || Number.MAX_SAFE_INTEGER
         }
@@ -78,7 +78,7 @@ module.exports = (env, argv) => {
             compress: true
         },
         output: {
-            filename: prod ? 'js/[contenthash].js' : 'js/[name].js',
+            filename: prod ? '[name]/[contenthash].js' : '[name]/[name].js',
             path: appOutDirPath
         },
         resolve: {
