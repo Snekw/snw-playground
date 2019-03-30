@@ -17,3 +17,14 @@ declare module "worker-loader*" {
 
     export default WebpackWorker;
 }
+
+declare interface AppInfo {
+    file: string,
+    name: string,
+    order: number,
+    outPath: string,
+    title: string
+}
+
+declare const APPS: AppInfo[]
+declare const DEBUG: boolean

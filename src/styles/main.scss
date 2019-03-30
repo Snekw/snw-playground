@@ -11,7 +11,7 @@ body {
 }
 
 body {
-    width: 100vw;
+    width: 100%;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -70,7 +70,7 @@ body {
     flex-direction: column;
 }
 
-#appFrame {
+.appFrame {
     box-sizing: border-box;
     background-color: rgb(114, 90, 90);
     border: none;
@@ -78,8 +78,24 @@ body {
     height: 80vh;
 }
 
-#appReadmeContainer {
+.appReadmeContainer {
     background-color: bisque;
     width: 100%;
     min-height: 10vh;
+}
+
+.error-bar{
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    color: #000;
+    background-color: $warningColor;
+    h1{
+        margin: 10px 0;
+    }
+}
+
+.hidden {
+    visibility: hidden;
+    display: none;
 }

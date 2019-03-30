@@ -42,6 +42,7 @@ const makeEntries = (fileObjs) => fileObjs
 const appEntries = makeEntries(apps)
 appEntries['index'] = 'index.ts'
 
+const appsList = apps.sort((a, b) => a.order - b.order)
 
 module.exports = (env, argv) => {
     const prod = argv.mode === 'production'
@@ -117,13 +118,17 @@ module.exports = (env, argv) => {
                     title,
                     template: '!!handlebars-loader!src/index.hbs',
                     chunks: ['index'],
-                    apps: apps.sort((a, b) => a.order - b.order),
+                    apps: appsList,
                     app: {
                         title
                     }
                 }),
                 new MiniCssExtractPlugin({
                     filename: 'css/[name].[contenthash].css'
+                }),
+                new webpack.DefinePlugin({
+                    APPS: JSON.stringify(appsList),
+                    DEBUG: JSON.stringify(!prod)
                 })
             ])
     }

@@ -9,10 +9,14 @@
 
 <body>
     <noscript>
-        <div class="warning">
+        <div class="error-bar">
             This page relies on JavaScript to show case the "apps" I have made.
         </div>
     </noscript>
+    <div id="unsupportedBrowser" class="error-bar hidden">
+        <h1>Unsupported browser.</h1>
+        <p>Upgrade to a modern browser to see the content correctly.</p>
+    </div>
     <header id="frontPageTitle">
         <h1>{{htmlWebpackPlugin.options.app.title}}</h1>
     </header>
@@ -21,18 +25,29 @@
             <ul>
                 {{#each htmlWebpackPlugin.options.apps as |app|}}
                 <li>
-                    <a href="{{app.outPath}}">{{app.title}}</a>
+                    <a href="{{app.outPath}}" data-index={{app.order}}>{{app.title}}</a>
                 </li>
                 {{/each}}
             </ul>
         </nav>
         <section id="appContainer" class="container">
-            <iframe id="appFrame" src="{{htmlWebpackPlugin.options.apps.0.outPath}}"></iframe>
-            <section id="appReadmeContainer">
-                <h1></h1>
-                <article></article>
-            </section>
+            <div>
+                <iframe class="appFrame" src="{{htmlWebpackPlugin.options.apps.0.outPath}}"></iframe>
+                <section class="appReadmeContainer">
+                    <h1></h1>
+                    <article></article>
+                </section>
+            </div>
         </section>
+        <template id="appTemplate">
+            <div>
+                <iframe class="appFrame"></iframe>
+                <section class="appReadmeContainer">
+                    <h1></h1>
+                    <article></article>
+                </section>
+            </div>
+        </template>
     </div>
 
 </body>
