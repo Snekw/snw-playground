@@ -1,6 +1,6 @@
 import 'styles/main.scss'
 
-import { debug } from 'lib/logger'
+import { time } from 'lib/logger'
 
 /**
  * Setup function to intialize everything
@@ -14,7 +14,7 @@ function bootstrap () {
    * @param app New application to load
    */
   function loadApp (app: AppInfo): void {
-    DEBUG && debug('appload', `Loading app: ${app.title}`)
+    DEBUG && time('appload', `Loading app: ${app.title}`)
 
     const template = document.importNode(appTemplate.content, true)
     template.querySelector('.appFrame')
@@ -28,7 +28,7 @@ function bootstrap () {
     }
     appContainer.appendChild(template)
 
-    DEBUG && debug('appload')
+    DEBUG && time('appload')
   }
 
   // Setup eventlisteners
