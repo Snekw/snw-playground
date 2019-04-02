@@ -104,7 +104,7 @@ module.exports = (env, argv) => {
             }
         },
         plugins: [
-                new CleanWebpackPlugin(appOutDirName)
+                new CleanWebpackPlugin()
             ]
             .concat(
                 apps.map(file => new HtmlWebpackPlugin({
