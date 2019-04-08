@@ -25,10 +25,36 @@ export const createShader = (gl: WebGL2RenderingContext, shaderSource: string, t
  */
 export const createShaderProgram = (gl: WebGL2RenderingContext, ...shaders: WebGLShader[]): WebGLProgram | null => {
   const program = gl.createProgram()
-  shaders.forEach((shader) => gl.attachShader(program, shader))
+  shaders.forEach((shader) => {
+    gl.attachShader(program, shader)
+    gl.deleteShader(shader)
+  })
   gl.linkProgram(program)
   if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
     log(`Unable to initalize a shared program: ${gl.getProgramInfoLog(program)}`)
+    return null
+  }
+  return program
+}
+
+/**
+ * Create a new transform feedback shader program
+ * @param gl Graphics context
+ * @param shaders Shaders to use in the program
+ */
+export const createTransformFeedbackShaderProgram = (gl: WebGL2RenderingContext,
+                                                     vertShader: WebGLShader,
+                                                     fragShader: WebGLShader,
+                                                     varyings: string[]): WebGLProgram | null => {
+  const program = gl.createProgram()
+  gl.attachShader(program, vertShader)
+  gl.deleteShader(vertShader)
+  gl.attachShader(program, fragShader)
+  gl.deleteShader(fragShader)
+  gl.transformFeedbackVaryings(program, varyings, gl.SEPARATE_ATTRIBS)
+  gl.linkProgram(program)
+  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+    log(`Unable to initalize a transform feedback shared program: ${gl.getProgramInfoLog(program)}`)
     return null
   }
   return program

@@ -18,6 +18,11 @@ declare module "worker-loader*" {
     export default WebpackWorker;
 }
 
+// extend the HTMLCanvasElement declaration to work with webgl2
+interface HTMLCanvasElement {
+    getContext(contextId: "webgl2", contextAttributes?: WebGLContextAttributes): WebGL2RenderingContext | null
+}
+
 declare interface AppInfo {
     file: string,
     name: string,

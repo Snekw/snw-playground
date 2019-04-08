@@ -1,5 +1,11 @@
 {
     "editor.codeActionsOnSave": {
         "source.fixAll.tslint": true
-    }
+    },
+    "typescript.format.insertSpaceAfterFunctionKeywordForAnonymousFunctions": true,
+    "typescript.format.insertSpaceAfterConstructor": true,
+    "typescript.format.insertSpaceAfterKeywordsInControlFlowStatements": true,
+    "typescript.format.insertSpaceAfterCommaDelimiter": true,
+    "typescript.format.insertSpaceBeforeFunctionParenthesis": true,
+    "typescript.tsdk": "node_modules\\typescript\\lib"
 }
