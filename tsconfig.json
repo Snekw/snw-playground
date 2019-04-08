@@ -14,7 +14,8 @@
             "es5",
             "es6",
             "es7",
-            "es2017.sharedmemory"
+            "es2017.sharedmemory",
+            "esnext.array"
         ]
     },
     "include": [
