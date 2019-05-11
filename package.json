@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server",
-    "build": "webpack --mode production"
+    "build": "webpack --mode production",
+    "update-order": "node updateOrder.js"
   },
   "author": "Ilkka Kuosmanen",
   "license": "MIT",

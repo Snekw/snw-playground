@@ -23,9 +23,9 @@
     <div id="frontPage" class="container">
         <nav id="appsList" class="container">
             <ul>
-                {{#each htmlWebpackPlugin.options.apps as |app|}}
+                {{#each htmlWebpackPlugin.options.apps}}
                 <li>
-                    <a href="{{app.outPath}}" data-index={{app.order}}>{{app.title}}</a>
+                    <a href="{{this.outPath}}" data-index="{{this.order}}">{{this.title}}</a>
                 </li>
                 {{/each}}
             </ul>

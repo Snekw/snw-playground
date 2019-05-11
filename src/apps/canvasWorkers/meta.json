@@ -1,6 +1,5 @@
 {
     "title": "Canvas Workers",
     "readme": "",
-    "index": "index.ts",
-    "order": -1
+    "index": "index.ts"
 }
