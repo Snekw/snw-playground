@@ -35,7 +35,7 @@ function bootstrap () {
   function navClickListener (this: HTMLElement, e: Event) {
     e.preventDefault()
     e.stopPropagation()
-    const app = APPS.find((v) => v.order === parseInt(this.dataset.index, 10))
+    const app = APPS[parseInt(this.dataset.index, 10)]
     loadApp(app)
     return false
   }

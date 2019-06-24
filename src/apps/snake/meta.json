@@ -1,6 +1,5 @@
 {
   "title": "Snake",
   "readme": "snake.md",
-  "index": "index.ts",
-  "order": -2
+  "index": "index.ts"
 }

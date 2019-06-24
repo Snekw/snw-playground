@@ -1,0 +1,8 @@
+{
+  "order": [
+    "snake",
+    "canvasWorkers",
+    "webglWorkers",
+    "mazeSolver"
+  ]
+}

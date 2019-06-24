@@ -5,29 +5,30 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server",
-    "build": "webpack --mode production"
+    "build": "webpack --mode production",
+    "update-order": "node updateOrder.js"
   },
   "author": "Ilkka Kuosmanen",
   "license": "MIT",
   "devDependencies": {
     "@types/webgl2": "0.0.4",
-    "clean-webpack-plugin": "^2.0.1",
+    "clean-webpack-plugin": "^2.0.2",
     "css-loader": "^2.1.1",
-    "handlebars": "^4.1.1",
+    "handlebars": "^4.1.2",
     "handlebars-loader": "^1.7.1",
     "html-webpack-plugin": "^4.0.0-beta.5",
-    "mini-css-extract-plugin": "^0.5.0",
-    "node-sass": "^4.11.0",
-    "raw-loader": "^1.0.0",
+    "mini-css-extract-plugin": "^0.6.0",
+    "node-sass": "^4.12.0",
+    "raw-loader": "^2.0.0",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.23.1",
-    "ts-loader": "^5.3.3",
-    "tslint": "^5.15.0",
+    "ts-loader": "^6.0.0",
+    "tslint": "^5.16.0",
     "tslint-config-standard": "^8.0.1",
-    "typescript": "^3.4.1",
+    "typescript": "^3.4.5",
     "webpack": "^4.29.6",
-    "webpack-cli": "^3.3.0",
-    "webpack-dev-server": "^3.2.1",
+    "webpack-cli": "^3.3.2",
+    "webpack-dev-server": "^3.3.1",
     "worker-loader": "^2.0.0"
   }
 }

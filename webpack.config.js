@@ -4,6 +4,7 @@ const CleanWebpackPlugin = require('clean-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const fs = require('fs')
 const path = require('path')
+const orderManager = require('./tools/orderManager')
 
 const appsDir = path.resolve(__dirname, 'src', 'apps')
 const appOutDirName = 'out'
@@ -28,8 +29,7 @@ const apps = fs
             title: meta.title,
             file: indexPath,
             outPath: `${name}/${name}.html`,
-            name,
-            order: meta.order || Number.MAX_SAFE_INTEGER
+            name
         }
     })
 
@@ -42,7 +42,19 @@ const makeEntries = (fileObjs) => fileObjs
 const appEntries = makeEntries(apps)
 appEntries['index'] = 'index.ts'
 
-const appsList = apps.sort((a, b) => a.order - b.order)
+const order = orderManager.getCurrentOrder()
+
+function findAppIndex(app) {
+    return order.order.findIndex(a => a === app)
+}
+
+const appsList = apps
+    .sort((a, b) => findAppIndex(a.name) - findAppIndex(b.name))
+    .map((a, i) => {
+        // order added to the app info because of a bug that prevents the usage of @index in the index.hbs file
+        a.order = i
+        return a
+    })
 
 module.exports = (env, argv) => {
     const prod = argv.mode === 'production'
@@ -54,23 +66,23 @@ module.exports = (env, argv) => {
         entry: appEntries,
         module: {
             rules: [{
-                    test: /\.tsx?$/,
-                    use: 'ts-loader',
-                    exclude: /node_modules/
-                },
-                {
-                    test: /\.(frag|vert)$/,
-                    use: 'raw-loader',
-                    exclude: /node_modules/
-                },
-                {
-                    test: /\.scss$/,
-                    use: [
-                        prod ? MiniCssExtractPlugin.loader : 'style-loader',
-                        'css-loader',
-                        'sass-loader'
-                    ]
-                }
+                test: /\.tsx?$/,
+                use: 'ts-loader',
+                exclude: /node_modules/
+            },
+            {
+                test: /\.(frag|vert)$/,
+                use: 'raw-loader',
+                exclude: /node_modules/
+            },
+            {
+                test: /\.scss$/,
+                use: [
+                    prod ? MiniCssExtractPlugin.loader : 'style-loader',
+                    'css-loader',
+                    'sass-loader'
+                ]
+            }
             ]
         },
         devtool: prod ? false : 'inline-source-map',
@@ -104,8 +116,8 @@ module.exports = (env, argv) => {
             }
         },
         plugins: [
-                new CleanWebpackPlugin()
-            ]
+            new CleanWebpackPlugin()
+        ]
             .concat(
                 apps.map(file => new HtmlWebpackPlugin({
                     title: file.title || file.name,
