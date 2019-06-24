@@ -3,6 +3,7 @@
     "snake",
     "canvasWorkers",
     "webglWorkers",
-    "mazeSolver"
+    "mazeSolver",
+    "clock"
   ]
 }

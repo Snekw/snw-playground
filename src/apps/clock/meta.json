@@ -1,6 +1,5 @@
 {
     "title": "GPU Accelerated Clock",
     "readme": "",
-    "index": "index.ts",
-    "order": -2
+    "index": "index.ts"
 }
