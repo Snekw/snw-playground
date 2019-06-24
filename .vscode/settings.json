@@ -1,5 +1,9 @@
 {
     "editor.codeActionsOnSave": {
         "source.fixAll.tslint": true
-    }
+    },
+    "javascript.format.insertSpaceAfterConstructor": true,
+    "javascript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets": true,
+    "typescript.format.insertSpaceAfterConstructor": true,
+    "typescript.format.insertSpaceBeforeFunctionParenthesis": true
 }

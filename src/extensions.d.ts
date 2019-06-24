@@ -28,3 +28,8 @@ declare interface AppInfo {
 
 declare const APPS: AppInfo[]
 declare const DEBUG: boolean
+
+declare interface HTMLCanvasElement {
+    // Fix getContext type for webgl2
+    getContext(contextId: 'webgl2', contextAttributes?: WebGLContextAttributes): WebGL2RenderingContext | null
+}
