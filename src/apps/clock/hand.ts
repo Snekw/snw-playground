@@ -1,6 +1,9 @@
+import { IDrawable } from 'apps/clock/renderHelpers'
 import { createShader, createShaderProgram } from 'lib/renderUtil'
 
-export abstract class ClockHand {
+export type ClockHandConstructor<T> = new (gl: WebGL2RenderingContext, width: number, height: number) => T
+
+export abstract class ClockHand implements IDrawable {
   protected abstract get vertShader (): string
   protected abstract get fragShader (): string
   public readonly program: WebGLProgram
@@ -19,14 +22,14 @@ export abstract class ClockHand {
   constructor (gl: WebGL2RenderingContext, width: number, height: number) {
     this.gl = gl
 
-    this.program = this.createShaderProgram(this.gl)
+    this.program = this.createShaderProgram()
     this.gl.useProgram(this.program)
     this.OffsetUniformLoc = this.gl.getUniformLocation(this.program, this.OffsetUnifromName)
     this.rotationUniformLoc = this.gl.getUniformLocation(this.program, this.rotationUniformName)
     this.resolutionUniformLoc = this.gl.getUniformLocation(this.program, this.resolutionUniformName)
 
     this.handData = this.generator(width, height)
-    this.drawBuffer = this.createVertexBuffer(gl)
+    this.drawBuffer = this.createVertexBuffer()
   }
 
   public updateUniforms (xOffset: number, yOffset: number, angle: number): void {
@@ -42,30 +45,30 @@ export abstract class ClockHand {
     this.gl.uniform2fv(this.rotationUniformLoc, this.rotation)
   }
 
-  public draw (gl: WebGL2RenderingContext): void {
-    gl.useProgram(this.program)
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.drawBuffer)
+  public draw (): void {
+    this.gl.useProgram(this.program)
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.drawBuffer)
 
-    gl.vertexAttribPointer(this.locCoord, 2, gl.FLOAT, false, 0, 0)
-    gl.enableVertexAttribArray(this.locCoord)
+    this.gl.vertexAttribPointer(this.locCoord, 2, this.gl.FLOAT, false, 0, 0)
+    this.gl.enableVertexAttribArray(this.locCoord)
 
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, this.handData.length / 2)
+    this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, this.handData.length / 2)
 
-    gl.disableVertexAttribArray(this.locCoord)
+    this.gl.disableVertexAttribArray(this.locCoord)
   }
 
   protected abstract generator (width: number, height: number): Float32Array
 
-  private createVertexBuffer (gl: WebGL2RenderingContext): WebGLBuffer {
-    const buffer = gl.createBuffer()
-    gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
-    gl.bufferData(gl.ARRAY_BUFFER, this.handData, gl.STATIC_DRAW, 0, this.handData.length)
+  private createVertexBuffer (): WebGLBuffer {
+    const buffer = this.gl.createBuffer()
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer)
+    this.gl.bufferData(this.gl.ARRAY_BUFFER, this.handData, this.gl.STATIC_DRAW, 0, this.handData.length)
     return buffer
   }
 
-  private createShaderProgram (gl: WebGL2RenderingContext): WebGLProgram {
-    const vertShader = createShader(gl, this.vertShader, gl.VERTEX_SHADER)
-    const fragShader = createShader(gl, this.fragShader, gl.FRAGMENT_SHADER)
-    return createShaderProgram(gl, vertShader, fragShader)
+  private createShaderProgram (): WebGLProgram {
+    const vertShader = createShader(this.gl, this.vertShader, this.gl.VERTEX_SHADER)
+    const fragShader = createShader(this.gl, this.fragShader, this.gl.FRAGMENT_SHADER)
+    return createShaderProgram(this.gl, vertShader, fragShader)
   }
 }

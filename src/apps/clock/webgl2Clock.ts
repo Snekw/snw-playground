@@ -1,87 +1,51 @@
-import { ClockHand } from 'apps/clock/hand'
-import { ClassyHand } from 'apps/clock/hands'
+import { ClockFace, ClockFaceConstructor } from 'apps/clock/clockFace'
+import { ClockHand, ClockHandConstructor } from 'apps/clock/hand'
 import { IWebgl2ClockRenderer } from 'apps/clock/webgl2ClockRenderer'
 
-export interface IWebgl2ClockOptions {
-  width?: number,
-  height?: number,
-  x?: number,
-  y?: number
-}
+export class Webgl2Clock<
+  ClockFaceType extends ClockFace,
+  HourHandType extends ClockHand,
+  MinuteHandType extends ClockHand,
+  SecondHandType extends ClockHand
+  > implements IWebgl2ClockRenderer {
+  private x: number = 0
+  private y: number = 0
+  private readonly gl: WebGL2RenderingContext
 
-interface IUniform {
-  name: string,
-  location?: WebGLUniformLocation,
-  program?: WebGLProgram
-}
+  private face: ClockFaceType
+  private hourHand: HourHandType
+  private minuteHand: MinuteHandType
+  private secondHand: SecondHandType
 
-interface IUniforms {
-  xOffset: IUniform,
-  yOffset: IUniform
-}
-
-export class Webgl2Clock implements IWebgl2ClockRenderer {
-  private width: number
-  private height: number
-  private x: number
-  private y: number
-
-  private hourHand: ClockHand
-  private minuteHand: ClockHand
-  private secondHand: ClockHand
-
-  private uniforms: IUniforms = {
-    xOffset: {
-      name: 'X_OFFSET'
-    },
-    yOffset: {
-      name: 'Y_OFFSET'
-    }
+  constructor (
+    gl: WebGL2RenderingContext,
+    clockFace: ClockFaceConstructor<ClockFaceType>,
+    hourHand: ClockHandConstructor<HourHandType>,
+    minuteHand: ClockHandConstructor<MinuteHandType>,
+    secondHand: ClockHandConstructor<SecondHandType>
+  ) {
+    this.gl = gl
+    this.face = new clockFace()
+    this.hourHand = new hourHand(gl, 40, 300)
+    this.minuteHand = new minuteHand(gl, 30, 400)
+    this.secondHand = new secondHand(gl, 20, 500)
   }
 
-  constructor (seedTime: number, options?: IWebgl2ClockOptions) {
-    options = options || {}
-    this.width = options.width || 0
-    this.height = options.height || 0
-    this.x = options.x || 0
-    this.y = options.y || 0
+  public init (): void {
+    this.update()
   }
 
-  public init (gl: WebGL2RenderingContext): void {
-    if (this.width === 0 || this.height === 0) {
-      this.width = gl.canvas.clientWidth
-      this.height = gl.canvas.clientHeight
-    }
-    this.hourHand = new ClassyHand(gl, 50, 200)
-    this.minuteHand = new ClassyHand(gl, 50, 300)
-    this.secondHand = new ClassyHand(gl, 50, 350)
-
-    this.initUniforms(gl)
-    this.update(gl)
-  }
-
-  public update (gl: WebGL2RenderingContext): void {
+  public update (): void {
     const now = new Date()
     this.hourHand.updateUniforms(this.x, this.y, -(now.getHours() / 12 * 360 + now.getMinutes() / 60 * 30))
     this.minuteHand.updateUniforms(this.x, this.y, -(now.getMinutes() / 60 * 360 + now.getSeconds() / 60 * 6))
     this.secondHand.updateUniforms(this.x, this.y, -(now.getSeconds() / 60 * 360 + now.getMilliseconds() / 1000 * 6))
-    return
   }
 
-  public render (gl: WebGL2RenderingContext): void {
-    this.hourHand.draw(gl)
-    this.minuteHand.draw(gl)
-    this.secondHand.draw(gl)
-    return
-  }
-
-  private initUniforms (gl: WebGL2RenderingContext): void {
-    gl.useProgram(this.uniforms.xOffset.program)
-    gl.uniform1f(this.uniforms.xOffset.location, this.x)
-
-    gl.useProgram(this.uniforms.yOffset.program)
-    gl.uniform1f(this.uniforms.yOffset.location, this.y)
-
-    gl.useProgram(undefined)
+  public render (): void {
+    this.face.draw()
+    this.hourHand.draw()
+    this.minuteHand.draw()
+    this.secondHand.draw()
   }
 }

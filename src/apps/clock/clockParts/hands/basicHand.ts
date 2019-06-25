@@ -1,19 +1,19 @@
 import { ClockHand } from 'apps/clock/hand'
-import classyHandFrag from 'apps/clock/shaders/base.frag'
-import classyHandVert from 'apps/clock/shaders/base.vert'
+import basicHandFrag from 'apps/clock/shaders/base.frag'
+import basicHandVert from 'apps/clock/shaders/base.vert'
 
-export class ClassyHand extends ClockHand {
+export class BasicHand extends ClockHand {
 
   constructor (context: WebGL2RenderingContext, width: number, height: number) {
     super(context, width, height)
   }
 
   protected get vertShader (): string {
-    return classyHandVert
+    return basicHandVert
   }
 
   protected get fragShader (): string {
-    return classyHandFrag
+    return basicHandFrag
   }
 
   protected generator (width: number, height: number): Float32Array {
