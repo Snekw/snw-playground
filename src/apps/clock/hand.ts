@@ -7,9 +7,11 @@ export abstract class ClockHand {
   private readonly gl: WebGL2RenderingContext
   private readonly handData: Float32Array
   private readonly OffsetUniformLoc: WebGLUniformLocation
-  private readonly OffsetUnifromName: string = 'OFFSET'
+  private readonly OffsetUnifromName: string = 'u_offset'
   private readonly rotationUniformLoc: WebGLUniformLocation
-  private readonly rotationUniformName: string = 'ROTATION'
+  private readonly rotationUniformName: string = 'u_rotation'
+  private readonly resolutionUniformLoc: WebGLUniformLocation
+  private readonly resolutionUniformName: string = 'u_resolution'
   private readonly drawBuffer: WebGLBuffer
   private readonly locCoord: number = 0
   private rotation: [number, number]
@@ -21,6 +23,7 @@ export abstract class ClockHand {
     this.gl.useProgram(this.program)
     this.OffsetUniformLoc = this.gl.getUniformLocation(this.program, this.OffsetUnifromName)
     this.rotationUniformLoc = this.gl.getUniformLocation(this.program, this.rotationUniformName)
+    this.resolutionUniformLoc = this.gl.getUniformLocation(this.program, this.resolutionUniformName)
 
     this.handData = this.generator(width, height)
     this.drawBuffer = this.createVertexBuffer(gl)
@@ -28,7 +31,11 @@ export abstract class ClockHand {
 
   public updateUniforms (xOffset: number, yOffset: number, angle: number): void {
     this.gl.useProgram(this.program)
-    this.gl.uniform2fv(this.OffsetUniformLoc, [xOffset, yOffset])
+    this.gl.uniform2fv(this.OffsetUniformLoc, [
+      Math.round(this.gl.canvas.width / 2) + xOffset,
+      Math.round(this.gl.canvas.height / 2) + yOffset
+    ])
+    this.gl.uniform2fv(this.resolutionUniformLoc, [this.gl.canvas.width, this.gl.canvas.height])
     const angleInRads = angle * Math.PI / 180
     this.rotation = [Math.sin(angleInRads), Math.cos(angleInRads)]
 

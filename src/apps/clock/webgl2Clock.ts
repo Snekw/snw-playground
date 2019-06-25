@@ -52,18 +52,19 @@ export class Webgl2Clock implements IWebgl2ClockRenderer {
       this.width = gl.canvas.clientWidth
       this.height = gl.canvas.clientHeight
     }
-    this.hourHand = new ClassyHand(gl, 0.2, 0.1)
-    this.minuteHand = new ClassyHand(gl, 0.1, 0.3)
-    this.secondHand = new ClassyHand(gl, 0.1, 0.1)
+    this.hourHand = new ClassyHand(gl, 50, 200)
+    this.minuteHand = new ClassyHand(gl, 50, 300)
+    this.secondHand = new ClassyHand(gl, 50, 350)
 
     this.initUniforms(gl)
+    this.update(gl)
   }
 
   public update (gl: WebGL2RenderingContext): void {
     const now = new Date()
-    this.hourHand.updateUniforms(this.x, this.y, now.getHours() / 24 * 360)
-    this.minuteHand.updateUniforms(this.x, this.y, now.getMinutes() / 60 * 360)
-    this.secondHand.updateUniforms(this.x, this.y, now.getSeconds() / 60 * 360)
+    this.hourHand.updateUniforms(this.x, this.y, -(now.getHours() / 12 * 360 + now.getMinutes() / 60 * 30))
+    this.minuteHand.updateUniforms(this.x, this.y, -(now.getMinutes() / 60 * 360 + now.getSeconds() / 60 * 6))
+    this.secondHand.updateUniforms(this.x, this.y, -(now.getSeconds() / 60 * 360 + now.getMilliseconds() / 1000 * 6))
     return
   }
 
@@ -75,12 +76,6 @@ export class Webgl2Clock implements IWebgl2ClockRenderer {
   }
 
   private initUniforms (gl: WebGL2RenderingContext): void {
-    const now = new Date()
-
-    this.hourHand.updateUniforms(this.x, this.y, now.getHours() / 24 * 360)
-    this.minuteHand.updateUniforms(this.x, this.y, now.getMinutes() / 60 * 360)
-    this.secondHand.updateUniforms(this.x, this.y, now.getSeconds() / 60 * 360)
-
     gl.useProgram(this.uniforms.xOffset.program)
     gl.uniform1f(this.uniforms.xOffset.location, this.x)
 

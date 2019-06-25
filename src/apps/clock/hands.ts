@@ -18,10 +18,10 @@ export class ClassyHand extends ClockHand {
 
   protected generator (width: number, height: number): Float32Array {
     return Float32Array.from([
-      0.0, 0.0,
-      -width, height,
-      width, height,
-      0.0, 1.0
+      0, 0,
+      -width, height / 3,
+      width, height / 3,
+      0, height
     ])
   }
 }
