@@ -33,3 +33,8 @@ export const createShaderProgram = (gl: WebGL2RenderingContext, ...shaders: WebG
   }
   return program
 }
+
+export const createResizer = (canvas: HTMLCanvasElement) => () => {
+  canvas.width = window.innerWidth
+  canvas.height = window.innerHeight
+}
