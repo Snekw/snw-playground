@@ -1,5 +1,6 @@
 {
   "order": [
+    "particles",
     "snake",
     "canvasWorkers",
     "webglWorkers",
