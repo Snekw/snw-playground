@@ -11,15 +11,18 @@ flat out vec2 v_position;
 flat out vec2 v_velocity;
 flat out float v_life;
 
+uniform float u_delta;
+
 float GRAVITY = -0.0001;
 vec2 GRAVITY_DIR = vec2(0.0, 1.0);
 float LIFE_DECAY = 0.02;
 
 void main() { 
-    v_velocity = a_velocity + vec2(GRAVITY_DIR.x * GRAVITY, GRAVITY_DIR.y * GRAVITY);
-    v_position = a_position.xy + v_velocity.xy;
+    vec2 newVelocity = a_velocity + vec2(GRAVITY_DIR.x * GRAVITY, GRAVITY_DIR.y * GRAVITY);
+    v_position = a_position.xy + newVelocity * u_delta;
+    v_velocity = newVelocity;
     
-    v_life = a_life - LIFE_DECAY;
+    v_life = a_life - LIFE_DECAY * u_delta;
 
     if(v_life > 0.0){
         gl_Position = a_position;

@@ -38,7 +38,7 @@ const spawnParticleToMouse = (location: {clientX: number, clientY: number}) => {
   const y = (location.clientY / window.innerHeight * -2) + 1
 
   particles.push({
-    life: 120,
+    life: 1000,
     particle: particleSystem.generate(100, { x, y })
   })
 }
@@ -60,17 +60,19 @@ canvas.addEventListener('mousemove', (ev: MouseEvent) => {
 let lastUpdate = 0
 let nUpdates = -1
 const autoUpdate = (timestamp: number) => {
+  const delta = (timestamp - lastUpdate)
   lastUpdate = timestamp
+
   gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
   gl.clearColor(0.2, 0.2, 0.2, 1)
   gl.clear(gl.COLOR_BUFFER_BIT)
 
   for (let i = 0; i < particles.length; i++) {
-    particles[i].life -= 1
+    particles[i].life -= delta
     if (particles[i].life < 0) {
       particles.splice(i, 1)
     } else {
-      particles[i].particle.update()
+      particles[i].particle.update(delta)
     }
   }
 

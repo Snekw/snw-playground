@@ -75,6 +75,7 @@ export class Particle {
   private readonly velocityBuffers: WebGLBuffer[]
   private readonly fb: WebGLTransformFeedback
   private readonly feedBackVAOs: WebGLVertexArrayObject[]
+  private readonly uDelta: WebGLUniformLocation
   private readonly uMouseLocation: WebGLUniformLocation
   private readonly uRepel: WebGLUniformLocation
   private currentIndex: number = 0
@@ -93,6 +94,7 @@ export class Particle {
     this.velocityBuffers = Particle.generateVelocityBuffers(this.gl, this.nParticles)
     this.fb = this.gl.createTransformFeedback()
 
+    this.uDelta = this.gl.getUniformLocation(this.transformProgram, 'u_delta')
     this.uMouseLocation = this.gl.getUniformLocation(this.transformProgram, 'u_mouse_location')
     this.uRepel = this.gl.getUniformLocation(this.transformProgram, 'u_repel')
 
@@ -124,7 +126,7 @@ export class Particle {
     ]
   }
 
-  public update (mousePos: IVec2, repel: boolean) {
+  public update (delta: number, mousePos: IVec2, repel: boolean) {
     const invertedIndex = this.currentIndex === 1 ? 0 : 1
 
     this.gl.bindTransformFeedback(this.gl.TRANSFORM_FEEDBACK, this.fb)
@@ -134,6 +136,7 @@ export class Particle {
 
     this.gl.useProgram(this.transformProgram)
 
+    this.gl.uniform1f(this.uDelta, delta / 10)
     this.gl.uniform2f(this.uMouseLocation, mousePos.x, mousePos.y)
     this.gl.uniform1f(this.uRepel, repel ? 1.0 : 0.0)
 

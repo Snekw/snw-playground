@@ -99,6 +99,7 @@ export class Particle {
   private readonly lifeBuffers: WebGLBuffer[]
   private readonly fb: WebGLTransformFeedback
   private readonly feedBackVAOs: WebGLVertexArrayObject[]
+  private readonly uDelta: WebGLUniformLocation
   private currentIndex: number = 0
 
   public constructor (
@@ -116,6 +117,8 @@ export class Particle {
     this.velocityBuffers = Particle.generateVelocityBuffers(this.gl, this.nParticles)
     this.lifeBuffers = Particle.generateLifeBuffers(this.gl, this.nParticles)
     this.fb = this.gl.createTransformFeedback()
+
+    this.uDelta = this.gl.getUniformLocation(this.transformProgram, 'u_delta')
 
     this.feedBackVAOs = [
       createVAO(this.gl, [
@@ -155,7 +158,7 @@ export class Particle {
     ]
   }
 
-  public update () {
+  public update (delta: number) {
     const invertedIndex = this.currentIndex === 1 ? 0 : 1
 
     this.gl.bindTransformFeedback(this.gl.TRANSFORM_FEEDBACK, this.fb)
@@ -165,6 +168,8 @@ export class Particle {
     this.gl.bindBufferBase(this.gl.TRANSFORM_FEEDBACK_BUFFER, 2, this.lifeBuffers[invertedIndex])
 
     this.gl.useProgram(this.transformProgram)
+
+    this.gl.uniform1f(this.uDelta, delta / 10)
 
     this.gl.beginTransformFeedback(this.gl.POINTS)
     this.gl.bindVertexArray(this.feedBackVAOs[this.currentIndex])

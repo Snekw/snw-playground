@@ -50,13 +50,16 @@ canvas.addEventListener('mouseup', () => repel = false)
 canvas.addEventListener('mouseout', () => repel = false)
 
 let nUpdates = -1
-const autoUpdate = () => {
+let lastUpdate = 0
+const autoUpdate = (timestamp: number) => {
+  const delta = (timestamp - lastUpdate)
+  lastUpdate = timestamp
 
   gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
   gl.clearColor(0.2, 0.2, 0.2, 1)
   gl.clear(gl.COLOR_BUFFER_BIT)
 
-  particle.update(mouseLoc, repel)
+  particle.update(delta, mouseLoc, repel)
 
   if (nUpdates > 0 || nUpdates === -1) {
     window.requestAnimationFrame(autoUpdate)

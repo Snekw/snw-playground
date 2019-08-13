@@ -10,6 +10,7 @@ flat out vec2 v_velocity;
 
 uniform vec2 u_mouse_location;
 uniform float u_repel;
+uniform float u_delta;
 
 float PARTICLE_MASS = 1.0;
 float GRAVITY_CENTER_MASS = 100.0;
@@ -20,7 +21,6 @@ void main() {
     float r = distance(a_position.xy, gravityCenter);
     vec2 direction = gravityCenter - a_position.xy;
     float force = PARTICLE_MASS * GRAVITY_CENTER_MASS / (r * r) * DAMPING;
-    float maxForce = min(force, DAMPING * 10.0);
 
     if(u_repel > 0.5){
         force = -force;
@@ -28,7 +28,7 @@ void main() {
 
     vec2 acceleration = force / PARTICLE_MASS * direction;
     vec2 newVelocity = a_velocity + acceleration;
-    vec2 newPosition = a_position.xy + newVelocity;
+    vec2 newPosition = a_position.xy + newVelocity * u_delta;
     v_velocity = newVelocity * 0.99;
     v_position = newPosition;
     // bounce at borders
