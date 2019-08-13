@@ -16,3 +16,8 @@ export const clamp = (val: number, min: number, max: number, size = 0): number =
  * @param max Maximum value
  */
 export const getRandomNumber = (min: number, max: number) => Math.random() * (max - min) + min
+
+export interface IVec2<T = number> {
+  x: T,
+  y: T
+}

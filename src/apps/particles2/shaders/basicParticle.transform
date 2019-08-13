@@ -13,7 +13,7 @@ flat out float v_life;
 
 float GRAVITY = -0.0001;
 vec2 GRAVITY_DIR = vec2(0.0, 1.0);
-float LIFE_DECAY = 0.01;
+float LIFE_DECAY = 0.02;
 
 void main() { 
     v_velocity = a_velocity + vec2(GRAVITY_DIR.x * GRAVITY, GRAVITY_DIR.y * GRAVITY);

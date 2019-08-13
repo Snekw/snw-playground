@@ -1,5 +1,5 @@
 import 'styles/app.scss'
-import { ParticleSystem } from './particle'
+import { Particle, ParticleSystem } from './particle'
 
 import basicParticleFrag from './shaders/basicParticle.frag'
 import basicParticleTransform from './shaders/basicParticle.transform'
@@ -28,13 +28,35 @@ resize()
 // bind the window resize to the resize function
 window.onresize = resize
 
-const particleSystem = new ParticleSystem(gl, basicParticleTransform, basicParticleVert, basicParticleFrag)
+const particleSystem = new ParticleSystem(gl, basicParticleTransform, basicParticleFrag)
 
-const particle = particleSystem.generate(100)
+const particles: Array<{ life: number, particle: Particle }> = []
 
-const update = () => {
-  particle.update()
+let isMouseDown = false
+
+const spawnParticleToMouse = (location: {clientX: number, clientY: number}) => {
+  const x = (location.clientX / window.innerWidth * 2) - 1
+  const y = (location.clientY / window.innerHeight * -2) + 1
+
+  particles.push({
+    life: 120,
+    particle: particleSystem.generate(100, { x, y })
+  })
 }
+
+canvas.addEventListener('click', (ev: MouseEvent) => {
+  spawnParticleToMouse(ev)
+})
+
+canvas.addEventListener('mousedown',() => isMouseDown = true)
+canvas.addEventListener('mouseup',() => isMouseDown = false)
+canvas.addEventListener('mouseleave',() => isMouseDown = false)
+
+canvas.addEventListener('mousemove', (ev: MouseEvent) => {
+  if (isMouseDown) {
+    spawnParticleToMouse(ev)
+  }
+})
 
 let lastUpdate = 0
 let nUpdates = -1
@@ -44,7 +66,14 @@ const autoUpdate = (timestamp: number) => {
   gl.clearColor(0.2, 0.2, 0.2, 1)
   gl.clear(gl.COLOR_BUFFER_BIT)
 
-  update()
+  for (let i = 0; i < particles.length; i++) {
+    particles[i].life -= 1
+    if (particles[i].life < 0) {
+      particles.splice(i, 1)
+    } else {
+      particles[i].particle.update()
+    }
+  }
 
   if (nUpdates > 0 || nUpdates === -1) {
     window.requestAnimationFrame(autoUpdate)
