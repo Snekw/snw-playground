@@ -3,7 +3,6 @@ import { Particle, ParticleSystem } from './particle'
 
 import basicParticleFrag from './shaders/basicParticle.frag'
 import basicParticleTransform from './shaders/basicParticle.transform'
-import basicParticleVert from './shaders/basicParticle.vert'
 // create canvas
 /**
  * The canvas used for rendering
