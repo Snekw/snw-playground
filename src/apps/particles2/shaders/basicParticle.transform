@@ -1,0 +1,31 @@
+#version 300 es
+#define POS_LOCATION 0
+#define VEL_LOCATION 1
+#define LIFE_LOCATION 2
+
+layout(location = POS_LOCATION) in vec4 a_position;
+layout(location = VEL_LOCATION) in vec2 a_velocity;
+layout(location = LIFE_LOCATION) in float a_life;
+
+flat out vec2 v_position;
+flat out vec2 v_velocity;
+flat out float v_life;
+
+uniform float u_delta;
+
+float GRAVITY = -0.0001;
+vec2 GRAVITY_DIR = vec2(0.0, 1.0);
+float LIFE_DECAY = 0.02;
+
+void main() { 
+    vec2 newVelocity = a_velocity + vec2(GRAVITY_DIR.x * GRAVITY, GRAVITY_DIR.y * GRAVITY);
+    v_position = a_position.xy + newVelocity * u_delta;
+    v_velocity = newVelocity;
+    
+    v_life = a_life - LIFE_DECAY * u_delta;
+
+    if(v_life > 0.0){
+        gl_Position = a_position;
+    }
+    gl_PointSize = 1.0;
+}

@@ -38,3 +38,76 @@ export const createResizer = (canvas: HTMLCanvasElement) => () => {
   canvas.width = window.innerWidth
   canvas.height = window.innerHeight
 }
+
+export const createProgram2 = (
+  gl: WebGL2RenderingContext,
+  vertexShaderSource: string,
+  fragmentShaderSource: string,
+  varyings?: string[],
+  feedbackType?: number
+): WebGLProgram => {
+  const vshader = createShader(gl, vertexShaderSource, gl.VERTEX_SHADER)
+  const fshader = createShader(gl, fragmentShaderSource, gl.FRAGMENT_SHADER)
+
+  const program = gl.createProgram()
+  gl.attachShader(program, vshader)
+  gl.deleteShader(vshader)
+  gl.attachShader(program, fshader)
+  gl.deleteShader(fshader)
+
+  // set only if feedback varying are defined
+  if (varyings && varyings.length) {
+    gl.transformFeedbackVaryings(program, varyings, feedbackType)
+  }
+  gl.linkProgram(program)
+
+  // check status
+  let gLog = gl.getProgramInfoLog(program)
+  if (gLog) {
+    log('Program Info: ', gLog)
+    gl.deleteProgram(program)
+    return null
+  }
+
+  gLog = gl.getShaderInfoLog(vshader)
+  if (gLog) {
+    log('Shader Info: ', gLog)
+    gl.deleteProgram(program)
+    return null
+  }
+
+  return program
+}
+
+export const createBuffer = (gl: WebGL2RenderingContext, data: number | ArrayBuffer, type: number): WebGLBuffer => {
+  const buffer = gl.createBuffer()
+
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
+  gl.bufferData(gl.ARRAY_BUFFER, data, type)
+  gl.bindBuffer(gl.ARRAY_BUFFER, null)
+
+  return buffer
+}
+
+export interface IVertexArrayObject {
+  buffer: WebGLBuffer,
+  location: number,
+  elementSize: number
+}
+
+export const createVAO = (gl: WebGL2RenderingContext, buffers: IVertexArrayObject[]): WebGLVertexArrayObject => {
+  const vao = gl.createVertexArray()
+  gl.bindVertexArray(vao)
+
+  buffers.forEach((buffer) => {
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer.buffer)
+    gl.enableVertexAttribArray(buffer.location)
+    gl.vertexAttribPointer(buffer.location, buffer.elementSize, gl.FLOAT, false, 0, 0)
+    gl.bindBuffer(gl.ARRAY_BUFFER, null)
+  })
+
+  gl.bindBuffer(gl.ARRAY_BUFFER, null)
+  gl.bindVertexArray(null)
+
+  return vao
+}

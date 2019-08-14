@@ -71,7 +71,7 @@ module.exports = (env, argv) => {
                 exclude: /node_modules/
             },
             {
-                test: /\.(frag|vert)$/,
+                test: /\.(frag|vert|transform)$/,
                 use: 'raw-loader',
                 exclude: /node_modules/
             },

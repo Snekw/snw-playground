@@ -7,6 +7,10 @@ declare module "*.vert" {
     const content: any;
     export default content;
 }
+declare module "*.transform" {
+    const content: any;
+    export default content;
+}
 declare class WebpackWorker extends Worker {
     constructor();
 }
