@@ -21,13 +21,13 @@ gl.clearColor(0, 0, 0, 0)
 
 let particle: Particle | undefined
 const particleSystem = new ParticleSystem(gl, basicParticleTransform, basicParticleFrag)
+let mouseLoc: IVec2 = { x: -2, y: 0 }
+let mouseLocReset: IVec2 = { x: 0, y: 0 }
 
-Settings.createSettings([
-  new Input('number', 'Number of particles', createParticles, 100000)
-],
-  {
-    backgroundColor: '#afafaf'
-  })
+const settings = Settings.createSettings([
+  new Input('number', 'Number of particles:', createParticles, 100000),
+  new Input<boolean>('checkbox', 'Gravity at center if no mouse', setGravityAtCenterEnabled, true)
+])
 
 /**
  * Resize the canvas
@@ -49,7 +49,15 @@ function createParticles (nParticles: number) {
   particle = particleSystem.generate(nParticles)
 }
 
-let mouseLoc: IVec2 = { x: -2, y: 0 }
+function setGravityAtCenterEnabled (state: boolean) {
+  if (state) {
+    mouseLocReset = { x: 0, y: 0 }
+  } else {
+    mouseLocReset = { x: -2, y: -2 }
+  }
+  mouseLoc = mouseLocReset
+}
+
 let repel: boolean = false
 
 canvas.addEventListener('mousemove', (ev: MouseEvent) => {
@@ -67,10 +75,10 @@ canvas.addEventListener('touchmove', (ev: TouchEvent) => {
 })
 
 canvas.addEventListener('touchend', () => {
-  mouseLoc = { x: -2, y: -2 }
+  mouseLoc = mouseLocReset
 })
 canvas.addEventListener('mouseout', () => {
-  mouseLoc = { x: -2, y: -2 }
+  mouseLoc = mouseLocReset
 })
 
 canvas.addEventListener('mousedown', () => repel = true)

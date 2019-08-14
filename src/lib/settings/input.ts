@@ -16,12 +16,14 @@ export class Input<T = any> implements ISetting {
     this.inputType = type
     this.defaultValue = value
     this.onUpdate = onUpdate
+    this.inputUpdate = this.inputUpdate.bind(this)
     if (value) {
       onUpdate(value)
     }
   }
 
   public detach (): void {
+    this.inputBoxElement.removeEventListener('change', this.inputUpdate)
     this.host.removeChild(this.inputBoxElement)
     this.host.removeChild(this.labelElement)
     return
@@ -38,9 +40,13 @@ export class Input<T = any> implements ISetting {
     this.inputBoxElement.id = inputId
     this.inputBoxElement.type = this.inputType
     if (this.defaultValue) {
-      this.inputBoxElement.value = this.defaultValue
+      if (this.inputType === 'checkbox') {
+        this.inputBoxElement.checked = this.defaultValue
+      } else {
+        this.inputBoxElement.value = this.defaultValue
+      }
     }
-    this.inputBoxElement.addEventListener('change', this.inputUpdate.bind(this))
+    this.inputBoxElement.addEventListener('change', this.inputUpdate)
 
     this.labelElement = document.createElement('label')
     this.labelElement.htmlFor = inputId
@@ -52,6 +58,10 @@ export class Input<T = any> implements ISetting {
 
   private inputUpdate (ev: Event) {
     // so bad
-    this.onUpdate(this.inputBoxElement.value as unknown as T)
+    if (this.inputType === 'checkbox') {
+      this.onUpdate(this.inputBoxElement.checked as unknown as T)
+    } else {
+      this.onUpdate(this.inputBoxElement.value as unknown as T)
+    }
   }
 }
