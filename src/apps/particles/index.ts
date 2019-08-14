@@ -1,7 +1,9 @@
-import { ParticleSystem } from 'apps/particles/particle'
+import { Particle, ParticleSystem } from 'apps/particles/particle'
 import 'styles/app.scss'
 
 import { IVec2 } from 'lib/math'
+import { Input } from 'lib/settings/input'
+import { Settings } from 'lib/settings/settings'
 import basicParticleFrag from './shaders/basicParticle.frag'
 import basicParticleTransform from './shaders/basicParticle.transform'
 // create canvas
@@ -17,6 +19,16 @@ document.body.appendChild(canvas)
 const gl = canvas.getContext('webgl2')
 gl.clearColor(0, 0, 0, 0)
 
+let particle: Particle | undefined
+const particleSystem = new ParticleSystem(gl, basicParticleTransform, basicParticleFrag)
+
+Settings.createSettings([
+  new Input('number', 'Number of particles', createParticles, 100000)
+],
+  {
+    backgroundColor: '#afafaf'
+  })
+
 /**
  * Resize the canvas
  */
@@ -28,9 +40,14 @@ resize()
 // bind the window resize to the resize function
 window.onresize = resize
 
-const particleSystem = new ParticleSystem(gl, basicParticleTransform, basicParticleFrag)
+createParticles(100000)
 
-const particle = particleSystem.generate(500000)
+function createParticles (nParticles: number) {
+  if (particle) {
+    particle.destroy()
+  }
+  particle = particleSystem.generate(nParticles)
+}
 
 let mouseLoc: IVec2 = { x: -2, y: 0 }
 let repel: boolean = false

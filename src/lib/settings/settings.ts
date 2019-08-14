@@ -1,9 +1,15 @@
 import { IVec2 } from 'lib/math'
 
+export interface ISettingsStyle {
+  backgroundColor?: string
+}
+
+export type OnSettingUpdate<T> = (value: T) => void
+
 export class Settings {
 
-  public static createSettings (settings: ISetting[]): Settings {
-    const newSettings = new Settings()
+  public static createSettings (settings: ISetting[], style?: ISettingsStyle): Settings {
+    const newSettings = new Settings(style)
 
     // Add new settings
     settings.forEach((s) => newSettings.addSetting(s))
@@ -16,9 +22,12 @@ export class Settings {
 
   private location: IVec2 = { x: 0, y: 0 }
 
-  private constructor () {
+  private constructor (style?: ISettingsStyle) {
     this.element = document.createElement('div')
     this.element.classList.add('settings-container')
+    if (style) {
+      this.element.style.backgroundColor = style.backgroundColor ? style.backgroundColor : ''
+    }
 
     this.updateLocation()
 
@@ -47,6 +56,5 @@ export class Settings {
 
 export interface ISetting {
   attach: (host: HTMLElement) => void,
-  detach: () => void,
-  setOnUpdate: () => void
+  detach: () => void
 }
