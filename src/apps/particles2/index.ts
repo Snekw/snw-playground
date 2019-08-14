@@ -70,6 +70,7 @@ const autoUpdate = (timestamp: number) => {
   for (let i = 0; i < particles.length; i++) {
     particles[i].life -= delta
     if (particles[i].life < 0) {
+      particles[i].particle.destroy()
       particles.splice(i, 1)
     } else {
       particles[i].particle.update(delta)

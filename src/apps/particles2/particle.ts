@@ -158,6 +158,13 @@ export class Particle {
     ]
   }
 
+  public destroy () {
+    this.feedBackVAOs.forEach((f) => this.gl.deleteVertexArray(f))
+    this.velocityBuffers.forEach((b) => this.gl.deleteBuffer(b))
+    this.vertexBuffers.forEach((b) => this.gl.deleteBuffer(b))
+    this.gl.deleteTransformFeedback(this.fb)
+  }
+
   public update (delta: number) {
     const invertedIndex = this.currentIndex === 1 ? 0 : 1
 

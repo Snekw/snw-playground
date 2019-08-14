@@ -30,9 +30,9 @@ window.onresize = resize
 
 const particleSystem = new ParticleSystem(gl, basicParticleTransform, basicParticleFrag)
 
-const particle = particleSystem.generate(200000)
+const particle = particleSystem.generate(500000)
 
-let mouseLoc: IVec2 = { x: 0, y: 0 }
+let mouseLoc: IVec2 = { x: -2, y: 0 }
 let repel: boolean = false
 
 canvas.addEventListener('mousemove', (ev: MouseEvent) => {
@@ -40,9 +40,20 @@ canvas.addEventListener('mousemove', (ev: MouseEvent) => {
   const y = (ev.clientY / window.innerHeight * -2) + 1
   mouseLoc = { x, y }
 })
+canvas.addEventListener('touchmove', (ev: TouchEvent) => {
+  for (let i = 0; i < ev.changedTouches.length; i++) {
+    const t = ev.changedTouches[i]
+    const x = (t.clientX / window.innerWidth * 2) - 1
+    const y = (t.clientY / window.innerHeight * -2) + 1
+    mouseLoc = { x, y }
+  }
+})
 
+canvas.addEventListener('touchend', () => {
+  mouseLoc = { x: -2, y: -2 }
+})
 canvas.addEventListener('mouseout', () => {
-  mouseLoc = { x: 0, y: 0 }
+  mouseLoc = { x: -2, y: -2 }
 })
 
 canvas.addEventListener('mousedown', () => repel = true)
