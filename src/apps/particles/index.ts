@@ -29,6 +29,8 @@ const settings = Settings.createSettings([
   new Input<boolean>('checkbox', 'Gravity at center if no mouse', setGravityAtCenterEnabled, true)
 ])
 
+settings.visibility(false)
+
 /**
  * Resize the canvas
  */
