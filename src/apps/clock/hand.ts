@@ -39,7 +39,7 @@ export abstract class ClockHand implements IDrawable {
       Math.round(this.gl.canvas.height / 2) + yOffset
     ])
     this.gl.uniform2fv(this.resolutionUniformLoc, [this.gl.canvas.width, this.gl.canvas.height])
-    const angleInRads = angle * Math.PI / 180
+    const angleInRads = (angle + 180) * Math.PI / 180
     this.rotation = [Math.sin(angleInRads), Math.cos(angleInRads)]
 
     this.gl.uniform2fv(this.rotationUniformLoc, this.rotation)
