@@ -1,5 +1,5 @@
 {
     "title": "Particles",
-    "readme": "",
+    "readme": "particles.md",
     "index": "index.ts"
 }

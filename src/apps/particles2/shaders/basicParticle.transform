@@ -2,6 +2,7 @@
 #define POS_LOCATION 0
 #define VEL_LOCATION 1
 #define LIFE_LOCATION 2
+precision highp float;
 
 layout(location = POS_LOCATION) in vec4 a_position;
 layout(location = VEL_LOCATION) in vec2 a_velocity;

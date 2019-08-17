@@ -6,7 +6,7 @@ import { time } from 'lib/logger'
  * Setup function to intialize everything
  */
 function bootstrap () {
-  const appContainer = document.getElementById('appContainer')
+  const appFrame = document.getElementById('appIframe') as HTMLIFrameElement
   const appTemplate = document.getElementById('appTemplate') as HTMLTemplateElement
 
   /**
@@ -16,17 +16,8 @@ function bootstrap () {
   function loadApp (app: AppInfo): void {
     DEBUG && time('appload', `Loading app: ${app.title}`)
 
-    const template = document.importNode(appTemplate.content, true)
-    template.querySelector('.appFrame')
-      .setAttribute('src', app.outPath)
-    const appReadmeContainer = template.querySelector('.appReadmeContainer')
-    appReadmeContainer.querySelector('h1').textContent = ''
-    appReadmeContainer.querySelector('article').textContent = ''
-
-    while (appContainer.lastChild) {
-      appContainer.removeChild(appContainer.lastChild)
-    }
-    appContainer.appendChild(template)
+    appFrame.src = app.outPath
+    appFrame.title = app.title
 
     DEBUG && time('appload')
   }
@@ -44,8 +35,4 @@ function bootstrap () {
   appLinkList.forEach((el) => el.addEventListener('click', navClickListener))
 }
 
-if (!('content' in document.createElement('template'))) {
-  document.getElementById('unsupportedBrowser').classList.remove('hidden')
-} else {
-  bootstrap()
-}
+bootstrap()

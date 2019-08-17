@@ -45,17 +45,17 @@ const spawnParticleToMouse = (location: {clientX: number, clientY: number}) => {
 
 canvas.addEventListener('click', (ev: MouseEvent) => {
   spawnParticleToMouse(ev)
-})
+}, { passive: true })
 
-canvas.addEventListener('mousedown',() => isMouseDown = true)
-canvas.addEventListener('mouseup',() => isMouseDown = false)
-canvas.addEventListener('mouseleave',() => isMouseDown = false)
+canvas.addEventListener('mousedown',() => isMouseDown = true, { passive: true })
+canvas.addEventListener('mouseup',() => isMouseDown = false, { passive: true })
+canvas.addEventListener('mouseleave',() => isMouseDown = false, { passive: true })
 
 canvas.addEventListener('mousemove', (ev: MouseEvent) => {
   if (isMouseDown) {
     spawnParticleToMouse(ev)
   }
-})
+}, { passive: true })
 
 let lastUpdate = 0
 let nUpdates = -1

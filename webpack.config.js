@@ -5,6 +5,8 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const fs = require('fs')
 const path = require('path')
 const orderManager = require('./tools/orderManager')
+const showdown = require('showdown')
+const converter = new showdown.Converter()
 
 const appsDir = path.resolve(__dirname, 'src', 'apps')
 const appOutDirName = 'out'
@@ -17,6 +19,7 @@ const apps = fs
     .map(filePath => {
         let meta
         let indexPath
+        let markdown = ''
         try {
             meta = JSON.parse(fs.readFileSync(path.join(appsDir, filePath, 'meta.json')))
             indexPath = path.join(filePath, meta.index || '')
@@ -24,23 +27,31 @@ const apps = fs
             console.error(err)
             throw "meta.json file missing or malformed"
         }
+        try {
+            markdown = fs.readFileSync(path.join(appsDir, filePath, meta.readme || '')).toString()
+        } catch (e) {
+            console.log(`${meta.title} contained no readme.`)
+        }
         const name = path.parse(filePath).name
+        const readme = converter.makeHtml(markdown)
         return {
             title: meta.title,
             file: indexPath,
             outPath: `${name}/${name}.html`,
-            name
+            name,
+            readmePath: `${name}/${name}-readme.html`,
+            readmeContent: readme
         }
     })
 
 const makeEntries = (fileObjs) => fileObjs
     .reduce((obj, curr) => {
-        obj[curr.name] = curr.file
+        obj[ curr.name ] = curr.file
         return obj
     }, {})
 
 const appEntries = makeEntries(apps)
-appEntries['index'] = 'index.ts'
+appEntries[ 'index' ] = 'index.ts'
 
 const order = orderManager.getCurrentOrder()
 
@@ -65,7 +76,7 @@ module.exports = (env, argv) => {
         mode: 'development',
         entry: appEntries,
         module: {
-            rules: [{
+            rules: [ {
                 test: /\.tsx?$/,
                 use: 'ts-loader',
                 exclude: /node_modules/
@@ -95,7 +106,7 @@ module.exports = (env, argv) => {
             path: appOutDirPath
         },
         resolve: {
-            extensions: ['.ts', '.tsx', '.js'],
+            extensions: [ '.ts', '.tsx', '.js' ],
             modules: [
                 path.resolve(__dirname, 'src'),
                 path.resolve(__dirname, 'src', 'apps'),
@@ -121,15 +132,25 @@ module.exports = (env, argv) => {
             .concat(
                 apps.map(file => new HtmlWebpackPlugin({
                     title: file.title || file.name,
-                    chunks: [file.name, 'vendor', 'runtime'],
+                    chunks: [ file.name, 'vendor', 'runtime' ],
                     filename: file.outPath
+                }))
+            )
+            .concat(
+                apps.map(file => new HtmlWebpackPlugin({
+                    title: file.title || file.name,
+                    template: '!!handlebars-loader!src/readme.hbs',
+                    // chunks: [file.name, 'vendor', 'runtime'],
+                    chunks: [],
+                    filename: file.readmePath,
+                    readmeContent: file.readmeContent
                 }))
             )
             .concat([
                 new HtmlWebpackPlugin({
                     title,
                     template: '!!handlebars-loader!src/index.hbs',
-                    chunks: ['index'],
+                    chunks: [ 'index' ],
                     apps: appsList,
                     app: {
                         title

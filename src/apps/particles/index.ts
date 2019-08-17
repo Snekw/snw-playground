@@ -66,7 +66,7 @@ canvas.addEventListener('mousemove', (ev: MouseEvent) => {
   const x = (ev.clientX / window.innerWidth * 2) - 1
   const y = (ev.clientY / window.innerHeight * -2) + 1
   mouseLoc = { x, y }
-})
+}, { passive: true })
 canvas.addEventListener('touchmove', (ev: TouchEvent) => {
   for (let i = 0; i < ev.changedTouches.length; i++) {
     const t = ev.changedTouches[i]
@@ -74,18 +74,18 @@ canvas.addEventListener('touchmove', (ev: TouchEvent) => {
     const y = (t.clientY / window.innerHeight * -2) + 1
     mouseLoc = { x, y }
   }
-})
+}, { passive: true })
 
 canvas.addEventListener('touchend', () => {
   mouseLoc = mouseLocReset
-})
+}, { passive: true })
 canvas.addEventListener('mouseout', () => {
   mouseLoc = mouseLocReset
-})
+}, { passive: true })
 
-canvas.addEventListener('mousedown', () => repel = true)
-canvas.addEventListener('mouseup', () => repel = false)
-canvas.addEventListener('mouseout', () => repel = false)
+canvas.addEventListener('mousedown', () => repel = true, { passive: true })
+canvas.addEventListener('mouseup', () => repel = false, { passive: true })
+canvas.addEventListener('mouseout', () => repel = false, { passive: true })
 
 let nUpdates = -1
 let lastUpdate = 0

@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Snekw's playground where cool things I have created are showcased.">
     <title>{{htmlWebpackPlugin.options.title}}</title>
 </head>
 
@@ -13,10 +14,6 @@
             This page relies on JavaScript to show case the "apps" I have made.
         </div>
     </noscript>
-    <div id="unsupportedBrowser" class="error-bar hidden">
-        <h1>Unsupported browser.</h1>
-        <p>Upgrade to a modern browser to see the content correctly.</p>
-    </div>
     <header id="frontPageTitle">
         <h1>{{htmlWebpackPlugin.options.app.title}}</h1>
     </header>
@@ -32,22 +29,9 @@
         </nav>
         <section id="appContainer" class="container">
             <div>
-                <iframe class="appFrame" src="{{htmlWebpackPlugin.options.apps.0.outPath}}"></iframe>
-                <section class="appReadmeContainer">
-                    <h1></h1>
-                    <article></article>
-                </section>
+                <iframe id='appIframe' class="appFrame" src="{{htmlWebpackPlugin.options.apps.0.outPath}}" title="{{htmlWebpackPlugin.options.apps.0.title}}"></iframe>
             </div>
         </section>
-        <template id="appTemplate">
-            <div>
-                <iframe class="appFrame"></iframe>
-                <section class="appReadmeContainer">
-                    <h1></h1>
-                    <article></article>
-                </section>
-            </div>
-        </template>
     </div>
 
 </body>
